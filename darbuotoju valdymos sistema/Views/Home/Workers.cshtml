@@ -1,0 +1,29 @@
+﻿@model IEnumerable<darbuotoju_valdymos_sistema.Models.Workers>
+@{
+    ViewData["Title"] = "Workers";
+}
+
+<div class="text-center">
+    <h1 class="display-4">Workers</h1>
+    <p>Worker info can be found here.</p>
+    <h2>Films</h2>
+<table class="table">
+  <tr>
+    <th>Film ID</th>
+    <th>Title</th>
+
+  </tr>
+  @foreach (var item in Model)
+  {
+    <tr>
+      <td>
+        @Html.DisplayFor(modelItem => item.id)
+      </td>
+      <td>
+        @Html.DisplayFor(modelItem => item.name)
+      </td>
+      <td>
+    </tr>
+  }
+</table>
+</div>
