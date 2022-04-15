@@ -1,4 +1,4 @@
-﻿@model IEnumerable<darbuotoju_valdymos_sistema.Models.Workers>
+﻿@model IEnumerable<darbuotoju_valdymos_sistema.Models.Task>
 @{
     ViewData["Title"] = "Workers";
 }
@@ -15,9 +15,6 @@
     <th>
         <a asp-action="Workers" asp-route-sortOrder="@ViewData["NameSortParam"]">@Html.DisplayNameFor(model => model.name)</a>
     </th>
-        <th>
-        <a asp-action="Workers" asp-route-sortOrder="@ViewData["AssignedTasksSortParam"]">@Html.DisplayNameFor(model => model.tasks)</a>
-    </th>
 
   </tr>
   @foreach (var item in Model)
@@ -30,10 +27,11 @@
         @Html.DisplayFor(modelItem => item.name)
       </td>
       <td>
-      @foreach(var task in item.tasks){
-         @Html.DisplayFor(modelItem => task.name)             
+      @foreach(var worker in item.workers){
+         @Html.DisplayFor(modelItem => worker.name)             
       }
       </td>
+      <td>
     </tr>
   }
 </table>

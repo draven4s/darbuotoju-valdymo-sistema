@@ -17,24 +17,25 @@ namespace darbuotoju_valdymos_sistema.Controllers
         {
             ViewData["NameSortParm"] = String.IsNullOrEmpty(Sort_Order) ? "name_desc" : "";
             ViewData["IdSortParam"] = Sort_Order == "id" ? "id_desc" : "id";
+            ViewData["DateSortParam"] = Sort_Order == "date" ? "date_desc" : "date";
             DBContext context = HttpContext.RequestServices.GetService(typeof(DBContext)) as DBContext;
-            var workers = context.GetAllWorkers().ToList();
+            var tasks = context.GetAllTasks().ToList();
             switch (Sort_Order)
             {
                 case "name_desc":
-                    workers = workers.OrderByDescending(n => n.name).ToList();
+                    tasks = tasks.OrderByDescending(n => n.name).ToList();
                     break;
                 case "id_desc":
-                    workers = workers.OrderByDescending(n => n.id).ToList();
+                    tasks = tasks.OrderByDescending(n => n.id).ToList();
                     break;
                 case "id":
-                    workers = workers.OrderBy(n => n.id).ToList();
+                    tasks = tasks.OrderBy(n => n.id).ToList();
                     break;
                 default:
-                    workers = workers.OrderBy(n => n.id).ToList();
+                    tasks = tasks.OrderBy(n => n.id).ToList();
                     break;
             }
-            return View(workers);
+            return View(tasks);
         }
 
 

@@ -6,16 +6,15 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+
 namespace darbuotoju_valdymos_sistema.Models
 {
-    public class Task
+    public class AssignedTasks
     {
         private DBContext context;
-        public int id { get; set; }
-        public string name { get; set; }
-        public string description { get; set; } 
-        public bool status { get; set; }
-        public List<Workers> workers { get; set; }
+        public int worker_id { get; set; }
+        public int task_id { get; set; }
 
+        
     }
 }
