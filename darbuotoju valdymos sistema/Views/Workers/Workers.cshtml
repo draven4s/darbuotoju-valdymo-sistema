@@ -5,18 +5,22 @@
 
 <div class="text-center">
     <h1 class="display-4">Workers</h1>
-    <p>Worker info can be found here.</p>
-    <h2>Films</h2>
-<table class="table">
+    <p>Worker information and Tasks assigned to them can be found here.</p>
+
+
+<table class="table" id="showtable">
   <tr>
     <th>                   
-        <a asp-action="Workers" asp-route-sortOrder="@ViewData["IdSortParam"]">@Html.DisplayNameFor(model => model.id)</a>
+        <a asp-action="Workers" asp-route-sortOrder="@ViewData["IdSortParam"]">Worker identifier</a>
     </th>
     <th>
-        <a asp-action="Workers" asp-route-sortOrder="@ViewData["NameSortParam"]">@Html.DisplayNameFor(model => model.name)</a>
+        <a asp-action="Workers" asp-route-sortOrder="@ViewData["NameSortParam"]">Worker name</a>
     </th>
-        <th>
-        <a asp-action="Workers" asp-route-sortOrder="@ViewData["AssignedTasksSortParam"]">@Html.DisplayNameFor(model => model.tasks)</a>
+    <th>
+        Assigned Tasks
+    </th>
+    <th>
+        Actions
     </th>
 
   </tr>
@@ -24,17 +28,84 @@
   {
     <tr>
       <td>
-        @Html.DisplayFor(modelItem => item.id)
+        @item.id
       </td>
       <td>
-        @Html.DisplayFor(modelItem => item.name)
+        @item.name
       </td>
       <td>
       @foreach(var task in item.tasks){
-         @Html.DisplayFor(modelItem => task.name)             
+          <button id="viewbtn">@task.name</button> 
       }
+      </td>
+      <td>
+          <button id="editUser">Edit Worker</button> 
+          <button id="deleteUser">Delete Worker</button> 
       </td>
     </tr>
   }
 </table>
+
 </div>
+<div id="showmodal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        
+    </div>
+</div>
+@section scripts{
+    <script>
+        $("#showtable").on("click", "#viewbtn", function () {
+            var id = $(this).closest("tr").find("td").eq(0).html();
+            $.ajax({
+                url: "@Url.Action("TaskInfo", "Tasks")",
+                data: { id: id },
+                success: function (data) {
+                    $("#showmodal .modal-dialog").html(data);
+                    $("#showmodal").modal("show");
+                }
+            });
+        });
+        $("#showtable").on("click", "#editUser", function () {
+            var id = $(this).closest("tr").find("td").eq(0).html();
+            $.ajax({
+                url: "@Url.Action("WorkerInfo", "Workers")",
+                data: { id: id },
+                success: function (data) {
+                    $("#showmodal .modal-dialog").html(data);
+                    $("#showmodal").modal("show");
+                }
+            });
+        });
+        $("#showtable").on("click", "#deleteUser", function () {
+            var id = $(this).closest("tr").find("td").eq(0).html();
+            $.ajax({
+                url: "@Url.Action("deleteUser", "Workers")",
+                data: { id: id },
+                success: function (data) {
+                    $("#showmodal .modal-dialog").html(data);
+                    $("#showmodal").modal("show");
+                }
+            });
+        });
+            
+        $("#showmodal").on("click", "#closebttn", function () {
+           $("#showmodal").modal("hide");
+
+        });
+
+       $("#showmodal").on("click", "#addTask", function () {
+           var id = document.getElementById("personalUserId").getAttribute("data-id");
+           var taskid = document.getElementById("addTask").getAttribute("data-taskid");
+            $.ajax({
+                url: "@Url.Action("AddTask", "Tasks")",
+                data: { userid: id, taskid: taskid},
+                success: function (data) {
+                    $("#showmodal .modal-dialog").html(data);
+                    $("#showmodal").modal("show");
+                }
+            });
+
+        });
+
+    </script>
+}

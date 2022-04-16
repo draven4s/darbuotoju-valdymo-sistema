@@ -13,7 +13,8 @@ namespace darbuotoju_valdymos_sistema.Models
         private DBContext context;
         public int id { get; set; }
         public string name { get; set; }
-        public List<Task> tasks { get; set; }   
+        public List<Task> tasks { get; set; }
+        public List<Task> excludedTasks { get; set; }
         //more things needed in here, will add more when I think of what we need more :D
 
     }

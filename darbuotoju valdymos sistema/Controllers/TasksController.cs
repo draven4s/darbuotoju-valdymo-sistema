@@ -37,6 +37,18 @@ namespace darbuotoju_valdymos_sistema.Controllers
             }
             return View(tasks);
         }
+        public IActionResult TaskInfo(int id)
+        {
+            DBContext context = HttpContext.RequestServices.GetService(typeof(DBContext)) as DBContext;
+            var tasks = context.GetTaskById(id);
+            return PartialView("_ModalTaskView", tasks);
+        }
+        public IActionResult AddTask(int userid, int taskid)
+        {
+            DBContext context = HttpContext.RequestServices.GetService(typeof(DBContext)) as DBContext;
+            var userInfo = context.AssignTaskToWorker(userid, taskid);
+            return PartialView("_ModalWorkerView", userInfo);
+        }
 
 
 

@@ -1,0 +1,53 @@
+﻿@model darbuotoju_valdymos_sistema.Models.Workers
+<div class="modal-content">
+    <div class="modal-header">
+        <button type="button" id="closebttn" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Modal title</h4>
+    </div>
+    <div class="modal-body">
+        <table class="table" id="userTable">
+              <tr>
+    <th>                   
+        Worker identifier
+    </th>
+    <th>
+        Worker name
+    </th>
+    <th>
+        Assigned Tasks
+    </th>
+
+  </tr>
+          <tr>
+            <td id="personalUserId" data-id=@Model.id>   
+                @Model.id
+            </td>
+            <td>   
+                @Model.name
+            </td>
+            <td>
+                @foreach(var item in Model.tasks)
+                {
+                    <button id="removeTask" data-taskId=@item.id>@item.name</button>         
+                }
+            </td>
+          </tr>
+          </table>
+          <table class="table" id="excludedTable">
+                <th>
+                    Unassigned Tasks
+                </th>
+                <tr>
+                    <td>
+                    @foreach(var item in Model.excludedTasks){
+                        <button id="addTask" data-taskid=@item.id>@item.name</button>
+                    }
+                    </td>
+                </tr>
+          </table>
+
+    </div>
+    <div class="modal-footer">
+        <button type="button" id="closebttn" class="btn btn-default" data-dismiss="modal">Close</button>
+    </div>
+</div>

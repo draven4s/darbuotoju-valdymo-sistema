@@ -73,6 +73,102 @@ namespace darbuotoju_valdymos_sistema.Models
 
             return list;
         }
+        //Funkcija skirta išgauti taskams, su sąrašu išskiriamų taskų
+        public List<Task> GetAllTasks(List<Task> excluded)
+        {
+            List<Task> list = new List<Task>();
+
+            using (MySqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("SELECT * FROM tasks", conn);
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        if (!excluded.Exists(n => n.id == reader.GetInt32("id")))
+                        {
+                            list.Add(new Task()
+                            {
+                                id = reader.GetInt32("id"),
+                                name = reader.GetString("name"),
+                                description = reader.GetString("description"),
+                                status = reader.GetBoolean("status"),
+                                workers = GetWorkersAssignedToTask(reader.GetInt32("id"))
+                            });
+                        }
+                    }
+                }
+            }
+
+            return list;
+        }
+        public Task GetTaskById(int taskid)
+        {
+            Task taskas = new Task();
+
+            using (MySqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("SELECT * FROM tasks where id = " + taskid, conn);
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        taskas = new Task()
+                        {
+                            id = reader.GetInt32("id"),
+                            name = reader.GetString("name"),
+                            description = reader.GetString("description"),
+                            status = reader.GetBoolean("status"),
+                            workers = GetWorkersAssignedToTask(reader.GetInt32("id"))
+                        };
+                    }
+                }
+            }
+
+            return taskas;
+        }
+
+        public Workers GetWorkerById(int workerid)
+        {
+            Workers worker = new Workers();
+
+            using (MySqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("SELECT * FROM workers where id = " + workerid, conn);
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        List<Task> tasks = GetTasksAssignedToWorker(reader.GetInt32("id"));
+                        List<Task> excluded = GetAllTasks(tasks);
+                        worker = new Workers()
+                        {
+                            id = reader.GetInt32("id"),
+                            name = reader.GetString("name"),
+                            tasks = tasks,
+                            excludedTasks = excluded
+                        };
+                    }
+                }
+            }
+
+            return worker;
+        }
+        public Workers AssignTaskToWorker(int workerid, int taskid)
+        {
+            using (MySqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("INSERT INTO assignedtasks (worker_id, task_id) VALUES  (" + workerid + "," + taskid + ")", conn);
+                var result = cmd.ExecuteNonQuery();
+                
+            }
+            Workers worker = GetWorkerById(workerid);
+            return worker;
+        }
 
         // getting the 
         public List<Workers> GetWorkersAssignedToTask(int taskid)

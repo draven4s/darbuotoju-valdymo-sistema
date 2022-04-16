@@ -17,6 +17,7 @@ namespace darbuotoju_valdymos_sistema.Controllers
         {
             ViewData["IdSortParam"] = String.IsNullOrEmpty(sortOrder) ? "id_desc" : "";
             ViewData["NameSortParam"] = sortOrder == "name" ? "name_desc" : "name";
+
             DBContext context = HttpContext.RequestServices.GetService(typeof(DBContext)) as DBContext;
             var workers = context.GetAllWorkers().ToList();
             switch (sortOrder)
@@ -35,6 +36,12 @@ namespace darbuotoju_valdymos_sistema.Controllers
                     break;
             }
             return View(workers);
+        }
+        public IActionResult WorkerInfo(int id)
+        {
+            DBContext context = HttpContext.RequestServices.GetService(typeof(DBContext)) as DBContext;
+            var worker = context.GetWorkerById(id);
+            return PartialView("_ModalWorkerView", worker);
         }
 
 
