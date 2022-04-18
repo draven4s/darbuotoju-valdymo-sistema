@@ -7,7 +7,7 @@
     <h1 class="display-4">Tasks</h1>
     <p>Task information</p>
     <h2></h2>
-       <div> <button id="createWorkerWindow" onclick="CreateNewTaskWindow()">Create Task</button> 
+       <div> <button id="createWorkerWindow" class="btn btn-success"onclick="CreateNewTaskWindow()">Create Task</button> 
         <tr><br />
        Search term:<input type="text" id="searchTerm" oninput="searchFunction()" name="searchTerm" value=""><br/>
        </tr>
@@ -23,6 +23,28 @@
 </div>
 @section scripts{
     <script>
+        function ViewWorker(id){
+            console.log(id);
+            $.ajax({
+                url: "@Url.Action("WorkerInfo", "Workers")",
+                data: { id: id },
+                success: function (data) {
+                    $("#showmodal .modal-dialog").html(data);
+                    $("#showmodal").modal("show");
+                }
+            });
+        }
+        function ViewTask(id){
+            $.ajax({
+                url: "@Url.Action("TaskInfo", "Tasks")",
+                data: { id: id },
+                success: function (data) {
+                    $("#showmodal .modal-dialog").html(data);
+                    $("#showmodal").modal("show");
+                }
+            });
+        }
+
         $("#showmodal").on("click", "#closebttn", function () {
            $("#showmodal").modal("hide");
 
@@ -38,6 +60,21 @@
             });
 
         }
+        function MarkAsDone(taskid){
+            if (confirm('Mark task as done?')) {
+                $.ajax({
+                    url: "@Url.Action("MarkTaskAsDone", "Tasks")",
+                    data: {id: taskid},
+                    success: function () {
+                        updateTaskTable();
+                    }
+                });
+            }else{
+
+            }
+
+        }
+
         function createTask(taskid){
            var id = document.getElementById("personalUserId").getAttribute("data-id");
             $.ajax({
@@ -68,6 +105,25 @@
             }
 
         }
+
+        function UpdateTask(id){
+            let taskName = document.getElementById("TaskName").value; 
+            let taskDescription = document.getElementById("TaskDescription").value; 
+            let dueByDate = document.getElementById("TaskDby").value; 
+            let status = document.getElementById("status").checked;
+            if (confirm('Create new task?')) {
+                $.ajax({
+                    url: "@Url.Action("UpdateTask", "Tasks")",
+                    data: {id: id, name: taskName, description: taskDescription, duebydate: dueByDate, status: status},
+                    success: function () {
+                        updateTaskTable();
+                    }
+                });
+            }else{
+
+            }
+
+        }
         function showTaskInfo(taskid){
            var id = document.getElementById("personalUserId").getAttribute("data-id");
             $.ajax({
@@ -83,7 +139,7 @@
         function updateTaskTable(){
             searchFunction();
         }
-        function removeTask(taskid){
+        function deleteTask(taskid){
         
            if (confirm('Create new task?')) {
             $.ajax({
@@ -106,6 +162,32 @@
                 data: {sortOrder: sortOrder, term: searchTerm},
                 success: function (data) {
                     $("#showtable").html(data);
+                }
+            });
+
+        }
+        function addTask(taskid){
+           var id = document.getElementById("personalUserId").getAttribute("data-id");
+            $.ajax({
+                url: "@Url.Action("AddTask", "Tasks")",
+                data: { userid: id, taskid: taskid},
+                success: function (data) {
+                    $("#showmodal .modal-dialog").html(data);
+                    $("#showmodal").modal("show");
+                    updateTaskTable();
+                }
+            });
+        }
+        function removeTask(taskid){
+        
+           var id = document.getElementById("personalUserId").getAttribute("data-id");
+            $.ajax({
+                url: "@Url.Action("RemoveTask", "Tasks")",
+                data: { userid: id, taskid: taskid},
+                success: function (data) {
+                    $("#showmodal .modal-dialog").html(data);
+                    $("#showmodal").modal("show");
+                    updateTaskTable();
                 }
             });
 

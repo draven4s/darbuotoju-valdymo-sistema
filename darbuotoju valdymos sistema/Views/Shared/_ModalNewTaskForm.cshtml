@@ -1,16 +1,16 @@
 ﻿@model darbuotoju_valdymos_sistema.Models.Task
 <div class="modal-content">
     <div class="modal-header">
-        <button type="button" id="closebttn" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Create new worker</h4>
+        <button type="button" id="closebttn" class="close btn btn-primary" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Create new task</h4>
     </div>
     <div class="modal-body">
         Task name:<input type="text" id="newTaskName" name="newTaskName" value=""><br>
         Task description:<textarea type="text" id="newTaskDescription" name="newTaskDescription" value=""></textarea><br>
         Task due by date:<input type="datetime-local" id="newTaskDby"name="newTaskDby" /><br>
-        <button type="button" id="closebttn" data-dismiss="modal" onclick="SaveNewTask()">Create</button>
+        <button type="button" id="closebttn" class="btn btn-success" data-dismiss="modal" onclick="SaveNewTask()">Create</button>
     </div>
     <div class="modal-footer">
-        <button type="button" id="closebttn" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="closebttn" class="btn btn-primary" data-dismiss="modal">Close</button>
     </div>
 </div>

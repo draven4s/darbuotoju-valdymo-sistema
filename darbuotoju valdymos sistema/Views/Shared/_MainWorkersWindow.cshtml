@@ -1,20 +1,20 @@
 ﻿@model IEnumerable<darbuotoju_valdymos_sistema.Models.Workers>
-<table>
+<table class="table table-striped table-dark">
 
 <tr>
-    <th>                   
-        <button id="sortByID" onclick="searchFunction('@ViewData["IdSortParam"]')">Worker identifier</button> 
+    <th class="align-middle">                   
+        <button id="sortByID" class="btn btn-primary" onclick="searchFunction('@ViewData["IdSortParam"]')">Worker identifier</button> 
     </th>
-    <th>
-        <button id="sortByName"onclick="searchFunction('@ViewData["NameSortParam"]')">Name</button> 
+    <th class="align-middle">
+        <button id="sortByName" class="btn btn-primary" onclick="searchFunction('@ViewData["NameSortParam"]')">Name</button> 
     </th>
-    <th>
-        <button id="sortByLastname"onclick="searchFunction('@ViewData["LastnameSortParam"]')">Lastname</button> 
+    <th class="align-middle">
+        <button id="sortByLastname" class="btn btn-primary" onclick="searchFunction('@ViewData["LastnameSortParam"]')">Lastname</button> 
     </th>
-    <th>
+    <th class="align-middle">
         Assigned Tasks
     </th>
-    <th>
+    <th class="align-middle">
         Actions
     </th>
 
@@ -34,12 +34,12 @@
 
       <td>
       @foreach(var task in item.tasks){
-          <button id="taskView" onclick="ViewTask(@task.id)">@task.name</button> 
+          <button id="taskView" class="@(task.status?"btn btn-success":"btn btn-primary")" onclick="ViewTask(@task.id)">@task.name</button> 
       }
       </td>
       <td>
-          <button id="editUser">Edit Worker</button> 
-          <button id="deleteUser" onclick="DeleteWorker(@item.id)">Delete Worker</button> 
+          <button id="editUser" class="btn btn-primary">Edit Worker</button> 
+          <button id="deleteUser" class="btn btn-danger" onclick="DeleteWorker(@item.id)">Delete Worker</button> 
       </td>
     </tr>
   }

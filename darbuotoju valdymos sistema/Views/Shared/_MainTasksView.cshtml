@@ -3,31 +3,37 @@
     For more information on enabling MVC for empty projects, visit http://go.microsoft.com/fwlink/?LinkID=397860
 *@
 <table class="table">
-  <tr>
-    <th>                   
-        <button id="sortByID" onclick="searchFunction('@ViewData["IdSortParam"]')">Task ID</button> 
+  <thead class="thead-dark">
+    <tr class="bg-secondary">
+    <th class="align-middle">                   
+        <button id="sortByID" class="btn btn-primary" onclick="searchFunction('@ViewData["IdSortParam"]')">Task ID</button> 
     </th>
-    <th>
-        <button id="sortByName"onclick="searchFunction('@ViewData["NameSortParam"]')">Task Name</button> 
-    </th>
-    <th>
+    <th class="align-middle">
+        <button id="sortByName" class="btn btn-primary" onclick="searchFunction('@ViewData["NameSortParam"]')">Task Name</button> 
+    </th >
+    <th class="align-middle">
         Created at
     </th>
-    <th>
-        <button id="sortByDate"onclick="searchFunction('@ViewData["DateSortParam"]')">Due by date</button> 
+    <th class="align-middle">
+        <button id="sortByDate" class="btn btn-primary" onclick="searchFunction('@ViewData["DateSortParam"]')">Due by date</button> 
     </th>
-    <th>
+    <th class="align-middle">
         Workers assigned
     </th>
-    <th>
+    <th class="align-middle">
         Actions
     </th>
 
-  </tr>
+
+    </tr>
+  </thead>
+  <tbody>
   @foreach (var item in Model)
   {
-    <tr>
-      <td>
+    
+       <tr @(item.status?"class=bg-success":"")>
+        
+       <td>
         @Html.DisplayFor(modelItem => item.id)
       </td>
       <td>
@@ -41,13 +47,18 @@
       </td>
       <td>
       @foreach(var worker in item.workers){
-          <button id="editUser">@worker.name @worker.lastName</button>    
+          <button id="editUser" onclick="ViewWorker(@worker.id)">@worker.name @worker.lastName</button>    
       }
       </td>
       <td>
-          <button id="editTask">Edit Task</button> 
-          <button id="deleteDelete" onclick="removeTask(@item.id)">Delete Task</button> 
+          <button id="editTask" class="btn btn-primary" onclick="ViewTask(@item.id)">Edit Task</button> 
+                @if (@item.status == false)
+                {
+                    <button id="markdoneTask" class="btn btn-primary" onclick="MarkAsDone(@item.id)">Mark as done</button>
+                }
+          <button id="deleteDelete" class="btn btn-danger" onclick="deleteTask(@item.id)">Delete Task</button> 
       </td>
-    </tr>
+      </tr>
   }
+  </tbody>
 </table>

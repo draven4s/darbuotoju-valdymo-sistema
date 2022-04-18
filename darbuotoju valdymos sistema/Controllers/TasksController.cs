@@ -15,13 +15,14 @@ namespace darbuotoju_valdymos_sistema.Controllers
 
         public IActionResult Tasks(string sortOrder, string term)
         {
-            ViewData["IdSortParam"] = String.IsNullOrEmpty(sortOrder) ? "id_desc" : "";
+            ViewData["IdSortParam"] = sortOrder == "id" ? "id_desc" : "id";
             ViewData["NameSortParam"] = sortOrder == "name" ? "name_desc" : "name";
-            ViewData["DateSortParam"] = sortOrder == "date" ? "date_desc" : "date";
+            ViewData["DateSortParam"] = String.IsNullOrEmpty(sortOrder) ? "date_desc" : "";
             term = String.IsNullOrEmpty(term) ? "" : term;
             DBContext context = HttpContext.RequestServices.GetService(typeof(DBContext)) as DBContext;
 
             var tasks = context.GetAllTasks().ToList();
+            
             if (term != "")
             {
                 var lTerm = term.ToLower();
@@ -31,22 +32,22 @@ namespace darbuotoju_valdymos_sistema.Controllers
             switch (sortOrder)
             {
                 case "name_desc":
-                    tasks = tasks.OrderByDescending(n => n.name).ToList();
+                    tasks = tasks.OrderBy(n => n.status == true).ThenByDescending(n => n.name).ToList();
                     break;
                 case "id_desc":
-                    tasks = tasks.OrderByDescending(n => n.id).ToList();
+                    tasks = tasks.OrderBy(n => n.status == true).ThenByDescending(n => n.id).ToList();
                     break;
                 case "name":
-                    tasks = tasks.OrderBy(n => n.name).ToList();
+                    tasks = tasks.OrderBy(n => n.status == true).ThenBy(n => n.name).ToList();
                     break;
-                case "date":
-                    tasks = tasks.OrderByDescending(n => n.dueby).ToList();
+                case "id":
+                    tasks = tasks.OrderBy(n => n.status == true).ThenBy(n => n.id).ToList();
                     break;
                 case "date_desc":
-                    tasks = tasks.OrderBy(n => n.dueby).ToList();
+                    tasks = tasks.OrderBy(n => n.status == true).ThenByDescending(n => n.dueby).ToList();
                     break;
                 default:
-                    tasks = tasks.OrderBy(n => n.id).ToList();
+                    tasks = tasks.OrderBy(n => n.status == true).ThenBy(n => n.dueby).ToList();
                     break;
             }
             return View(tasks);
@@ -87,9 +88,9 @@ namespace darbuotoju_valdymos_sistema.Controllers
         }
         public IActionResult UpdateTasksTableSearch(string sortOrder, string term)
         {
-            ViewData["IdSortParam"] = String.IsNullOrEmpty(sortOrder) ? "id_desc" : "";
+            ViewData["IdSortParam"] = sortOrder == "id" ? "id_desc" : "id";
             ViewData["NameSortParam"] = sortOrder == "name" ? "name_desc" : "name";
-            ViewData["DateSortParam"] = sortOrder == "date" ? "date_desc" : "date";
+            ViewData["DateSortParam"] = String.IsNullOrEmpty(sortOrder) ? "date_desc" : "";
             term = String.IsNullOrEmpty(term) ? "" : term;
             DBContext context = HttpContext.RequestServices.GetService(typeof(DBContext)) as DBContext;
 
@@ -103,33 +104,42 @@ namespace darbuotoju_valdymos_sistema.Controllers
             switch (sortOrder)
             {
                 case "name_desc":
-                    tasks = tasks.OrderByDescending(n => n.name).ToList();
+                    tasks = tasks.OrderBy(n => n.status == true).ThenByDescending(n => n.name).ToList();
                     break;
                 case "id_desc":
-                    tasks = tasks.OrderByDescending(n => n.id).ToList();
+                    tasks = tasks.OrderBy(n => n.status == true).ThenByDescending(n => n.id).ToList();
                     break;
                 case "name":
-                    tasks = tasks.OrderBy(n => n.name).ToList();
+                    tasks = tasks.OrderBy(n => n.status == true).ThenBy(n => n.name).ToList();
                     break;
-                case "date":
-                    tasks = tasks.OrderByDescending(n => n.dueby).ToList();
+                case "id":
+                    tasks = tasks.OrderBy(n => n.status == true).ThenBy(n => n.id).ToList();
                     break;
                 case "date_desc":
-                    tasks = tasks.OrderBy(n => n.dueby).ToList();
+                    tasks = tasks.OrderBy(n => n.status == true).ThenByDescending(n => n.dueby).ToList();
                     break;
                 default:
-                    tasks = tasks.OrderBy(n => n.id).ToList();
+                    tasks = tasks.OrderBy(n => n.status == true).ThenBy(n => n.dueby).ToList();
                     break;
             }
 
             return PartialView("_MainTasksView", tasks);
+        }
+        public void MarkTaskAsDone(int id)
+        {
+            DBContext context = HttpContext.RequestServices.GetService(typeof(DBContext)) as DBContext;
+            context.MarkTaskAsDone(id);
         }
         public void CreateNewTask(string name, string description, DateTime duebydate, long createddate)
         {
             DBContext context = HttpContext.RequestServices.GetService(typeof(DBContext)) as DBContext;
             context.CreateNewTask(name, description, duebydate, createddate);
         }
-
+        public void UpdateTask(int id,string name, string description, DateTime duebydate, bool status)
+        {
+            DBContext context = HttpContext.RequestServices.GetService(typeof(DBContext)) as DBContext;
+            context.UpdateTask(id, name, description, duebydate, status);
+        }
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {

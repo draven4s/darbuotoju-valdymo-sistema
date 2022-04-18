@@ -5,10 +5,13 @@
 *@
 <tr>
     <th>                   
-        Worker identifier
+        Identifier
     </th>
     <th>
-        Worker name
+        Mame
+    </th>
+    <th>
+        Surname
     </th>
     <th>
         Assigned Tasks
@@ -21,6 +24,9 @@
     </td>
     <td>   
         @Model.name
+    </td>
+    <td>   
+        @Model.lastName
     </td>
     <td>
         @foreach(var item in Model.tasks)

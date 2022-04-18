@@ -1,13 +1,17 @@
 ﻿@model darbuotoju_valdymos_sistema.Models.Task
 <div class="modal-content">
     <div class="modal-header">
-        <button type="button" id="closebttn" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-        <h4 class="modal-title">Modal title</h4>
+        <button type="button" id="closebttn" class="close btn btn-primary" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">Edit the task</h4>
     </div>
     <div class="modal-body">
-        @Model.description
+        Task name:<input type="text" id="TaskName" name="TaskName" value="@Model.name"><br>
+        Task description: <textarea type="text" id="TaskDescription" name="TaskDescription" value="@Model.description">@Model.description</textarea><br>
+        Task due by date:<input type="datetime-local" id="TaskDby" name="TaskDby" defaultValue="@Model.dueby.ToString("yyyy-MM-dd'T'hh:mm")" value="@Model.dueby.ToString("yyyy-MM-dd'T'hh:mm")" /> <br>
+        Task done: <input type="checkbox" id="status" name="status" @(Model.status?"checked='checked'":"")><br>
+        <button type="button" id="closebttn" class="btn btn-success" data-dismiss="modal" onclick="UpdateTask(@Model.id)">Update task</button>
     </div>
     <div class="modal-footer">
-        <button type="button" id="closebttn" class="btn btn-default" data-dismiss="modal">Close</button>
+        <button type="button" id="closebttn" class="btn btn-primary" data-dismiss="modal">Close</button>
     </div>
 </div>

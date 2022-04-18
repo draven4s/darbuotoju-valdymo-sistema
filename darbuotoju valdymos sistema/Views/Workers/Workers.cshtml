@@ -7,17 +7,15 @@
     <h1 class="display-4">Workers</h1>
     <p>Worker information and Tasks assigned to them can be found here.</p>
 
-       <div> <button id="createWorkerWindow" onclick="CreateNewWorker()">Create Worker</button> 
+       <div> <button id="createWorkerWindow" class="btn btn-primary" onclick="CreateNewWorker()">Create Worker</button> 
         <tr><br />
        Search term:<input type="text" id="searchTerm" oninput="searchFunction()" name="searchTerm" value=""><br/>
        </tr>
-       </div>
+       </div><br></br>
     <div class="table" id="showtable">
       @await Html.PartialAsync("_MainWorkersWindow", Model)
     </div>
-
 </div>
-
 <div id="showmodal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         
@@ -102,6 +100,24 @@
                     $("#showmodal").modal("show");
                 }
             });
+
+        }
+       function UpdateTask(id){
+            let taskName = document.getElementById("TaskName").value; 
+            let taskDescription = document.getElementById("TaskDescription").value; 
+            let dueByDate = document.getElementById("TaskDby").value; 
+            let status = document.getElementById("status").checked;
+            if (confirm('Create new task?')) {
+                $.ajax({
+                    url: "@Url.Action("UpdateTask", "Tasks")",
+                    data: {id: id, name: taskName, description: taskDescription, duebydate: dueByDate, status: status},
+                    success: function () {
+                        updateTaskTable();
+                    }
+                });
+            }else{
+
+            }
 
         }
         function SaveNewWorker(){

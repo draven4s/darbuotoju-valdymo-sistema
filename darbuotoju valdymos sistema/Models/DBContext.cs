@@ -209,6 +209,25 @@ namespace darbuotoju_valdymos_sistema.Models
             }
 
         }
+        public void UpdateTask(int id, string name, string description, DateTime duebydate, bool status)
+        {
+            using (MySqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("UPDATE tasks SET name='" + name + "', status = " + status + ", description = '" + description + "', dueby = '" + duebydate.ToString("yyyy-MM-dd HH:mm:ss") + "' WHERE id=" + id + ";", conn);
+                var result = cmd.ExecuteNonQuery();
+            }
+
+        }
+        public void MarkTaskAsDone(int id)
+        {
+            using (MySqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("UPDATE tasks SET status = true WHERE id=" + id + ";", conn);
+                var result = cmd.ExecuteNonQuery();
+            }
+        }
         public void RemoveTask(int id)
         {
             using (MySqlConnection conn = GetConnection())
