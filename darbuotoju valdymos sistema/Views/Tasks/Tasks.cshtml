@@ -1,38 +1,114 @@
 ﻿@model IEnumerable<darbuotoju_valdymos_sistema.Models.Task>
 @{
-    ViewData["Title"] = "Workers";
+    ViewData["Title"] = "Tasks";
 }
 
 <div class="text-center">
-    <h1 class="display-4">Workers</h1>
-    <p>Worker info can be found here.</p>
-    <h2>Films</h2>
-<table class="table">
-  <tr>
-    <th>                   
-        <a asp-action="Workers" asp-route-sortOrder="@ViewData["IdSortParam"]">@Html.DisplayNameFor(model => model.id)</a>
-    </th>
-    <th>
-        <a asp-action="Workers" asp-route-sortOrder="@ViewData["NameSortParam"]">@Html.DisplayNameFor(model => model.name)</a>
-    </th>
-
-  </tr>
-  @foreach (var item in Model)
-  {
-    <tr>
-      <td>
-        @Html.DisplayFor(modelItem => item.id)
-      </td>
-      <td>
-        @Html.DisplayFor(modelItem => item.name)
-      </td>
-      <td>
-      @foreach(var worker in item.workers){
-         @Html.DisplayFor(modelItem => worker.name)             
-      }
-      </td>
-      <td>
-    </tr>
-  }
-</table>
+    <h1 class="display-4">Tasks</h1>
+    <p>Task information</p>
+    <h2></h2>
+       <div> <button id="createWorkerWindow" onclick="CreateNewTaskWindow()">Create Task</button> 
+        <tr><br />
+       Search term:<input type="text" id="searchTerm" oninput="searchFunction()" name="searchTerm" value=""><br/>
+       </tr>
+       </div>
+<div class="table" id="showtable">
+  @await Html.PartialAsync("_MainTasksView", Model)
 </div>
+</div>
+<div id="showmodal" class="modal fade" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+        
+    </div>
+</div>
+@section scripts{
+    <script>
+        $("#showmodal").on("click", "#closebttn", function () {
+           $("#showmodal").modal("hide");
+
+        });
+         function CreateNewTaskWindow(){
+            $.ajax({
+                url: "@Url.Action("CreateTaskWindow", "Tasks")",
+                data: {},
+                success: function (data) {
+                    $("#showmodal .modal-dialog").html(data);
+                    $("#showmodal").modal("show");
+                }
+            });
+
+        }
+        function createTask(taskid){
+           var id = document.getElementById("personalUserId").getAttribute("data-id");
+            $.ajax({
+                url: "@Url.Action("AddTask", "Tasks")",
+                data: { userid: id, taskid: taskid},
+                success: function (data) {
+                    $("#showmodal .modal-dialog").html(data);
+                    $("#showmodal").modal("show");
+                    updateTaskTable();
+                }
+            });
+        }
+        function SaveNewTask(){
+            let taskName = document.getElementById("newTaskName").value; 
+            let taskDescription = document.getElementById("newTaskDescription").value; 
+            let dueByDate = document.getElementById("newTaskDby").value; 
+            let createdDate = Date.now();
+            if (confirm('Create new task?')) {
+                $.ajax({
+                    url: "@Url.Action("CreateNewTask", "Tasks")",
+                    data: {name: taskName, description: taskDescription, duebydate: dueByDate, createddate: createdDate},
+                    success: function () {
+                        updateTaskTable();
+                    }
+                });
+            }else{
+
+            }
+
+        }
+        function showTaskInfo(taskid){
+           var id = document.getElementById("personalUserId").getAttribute("data-id");
+            $.ajax({
+                url: "@Url.Action("AddTask", "Tasks")",
+                data: { userid: id, taskid: taskid},
+                success: function (data) {
+                    $("#showmodal .modal-dialog").html(data);
+                    $("#showmodal").modal("show");
+                    updateTaskTable();
+                }
+            });
+        }
+        function updateTaskTable(){
+            searchFunction();
+        }
+        function removeTask(taskid){
+        
+           if (confirm('Create new task?')) {
+            $.ajax({
+                url: "@Url.Action("DeleteTask", "Tasks")",
+                data: {taskid: taskid},
+                success: function (data) {
+                    updateTaskTable();
+                }
+            });
+           }else{
+           
+           }
+
+        }
+        function searchFunction(sortOrder)
+        {
+            let searchTerm = document.getElementById("searchTerm").value; 
+            $.ajax({
+                url: "@Url.Action("UpdateTasksTableSearch", "Tasks")",
+                data: {sortOrder: sortOrder, term: searchTerm},
+                success: function (data) {
+                    $("#showtable").html(data);
+                }
+            });
+
+        }
+    </script>
+}

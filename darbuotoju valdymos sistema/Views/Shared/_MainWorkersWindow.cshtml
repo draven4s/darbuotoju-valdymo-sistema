@@ -1,0 +1,46 @@
+﻿@model IEnumerable<darbuotoju_valdymos_sistema.Models.Workers>
+<table>
+
+<tr>
+    <th>                   
+        <button id="sortByID" onclick="searchFunction('@ViewData["IdSortParam"]')">Worker identifier</button> 
+    </th>
+    <th>
+        <button id="sortByName"onclick="searchFunction('@ViewData["NameSortParam"]')">Name</button> 
+    </th>
+    <th>
+        <button id="sortByLastname"onclick="searchFunction('@ViewData["LastnameSortParam"]')">Lastname</button> 
+    </th>
+    <th>
+        Assigned Tasks
+    </th>
+    <th>
+        Actions
+    </th>
+
+  </tr>
+  @foreach (var item in Model)
+  {
+    <tr>
+      <td>
+        @item.id
+      </td>
+      <td>
+        @item.name
+      </td>
+      <td>
+        @item.lastName
+      </td>
+
+      <td>
+      @foreach(var task in item.tasks){
+          <button id="taskView" onclick="ViewTask(@task.id)">@task.name</button> 
+      }
+      </td>
+      <td>
+          <button id="editUser">Edit Worker</button> 
+          <button id="deleteUser" onclick="DeleteWorker(@item.id)">Delete Worker</button> 
+      </td>
+    </tr>
+  }
+  </table>

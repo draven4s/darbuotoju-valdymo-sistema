@@ -21,31 +21,8 @@ namespace darbuotoju_valdymos_sistema.Models
         {
             return new MySqlConnection(ConnectionString);
         }
-
-        public List<Workers> GetAllWorkers()
-        {
-            List<Workers> list = new List<Workers>();
-
-            using (MySqlConnection conn = GetConnection())
-            {
-                conn.Open();
-                MySqlCommand cmd = new MySqlCommand("SELECT * FROM workers", conn);
-                using (MySqlDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        list.Add(new Workers()
-                        {
-                            id = reader.GetInt32("id"),
-                            name = reader.GetString("name"),
-                            tasks = GetTasksAssignedToWorker(reader.GetInt32("id"))
-                        });
-                    }
-                }
-            }
-
-            return list;
-        }
+        
+        
 
         public List<Task> GetAllTasks()
         {
@@ -65,7 +42,9 @@ namespace darbuotoju_valdymos_sistema.Models
                             name = reader.GetString("name"),
                             description = reader.GetString("description"),
                             status = reader.GetBoolean("status"),
-                            workers = GetWorkersAssignedToTask(reader.GetInt32("id"))
+                            workers = GetWorkersAssignedToTask(reader.GetInt32("id")),
+                            dueby = reader.GetDateTime("dueby"),
+                            created = reader.GetDateTime("created")
                         });
                     }
                 }
@@ -73,7 +52,6 @@ namespace darbuotoju_valdymos_sistema.Models
 
             return list;
         }
-        //Funkcija skirta išgauti taskams, su sąrašu išskiriamų taskų
         public List<Task> GetAllTasks(List<Task> excluded)
         {
             List<Task> list = new List<Task>();
@@ -94,7 +72,9 @@ namespace darbuotoju_valdymos_sistema.Models
                                 name = reader.GetString("name"),
                                 description = reader.GetString("description"),
                                 status = reader.GetBoolean("status"),
-                                workers = GetWorkersAssignedToTask(reader.GetInt32("id"))
+                                workers = GetWorkersAssignedToTask(reader.GetInt32("id")),
+                                dueby = reader.GetDateTime("dueby"),
+                                created = reader.GetDateTime("created")
                             });
                         }
                     }
@@ -121,7 +101,9 @@ namespace darbuotoju_valdymos_sistema.Models
                             name = reader.GetString("name"),
                             description = reader.GetString("description"),
                             status = reader.GetBoolean("status"),
-                            workers = GetWorkersAssignedToTask(reader.GetInt32("id"))
+                            workers = GetWorkersAssignedToTask(reader.GetInt32("id")),
+                            dueby = reader.GetDateTime("dueby"),
+                            created = reader.GetDateTime("created")
                         };
                     }
                 }
@@ -129,7 +111,31 @@ namespace darbuotoju_valdymos_sistema.Models
 
             return taskas;
         }
+        public List<Workers> GetAllWorkers()
+        {
+            List<Workers> list = new List<Workers>();
 
+            using (MySqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("SELECT * FROM workers", conn);
+                using (MySqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        list.Add(new Workers()
+                        {
+                            id = reader.GetInt32("id"),
+                            name = reader.GetString("name"),
+                            lastName = reader.GetString("lastname"),
+                            tasks = GetTasksAssignedToWorker(reader.GetInt32("id"))
+                        });
+                    }
+                }
+            }
+
+            return list;
+        }
         public Workers GetWorkerById(int workerid)
         {
             Workers worker = new Workers();
@@ -148,6 +154,7 @@ namespace darbuotoju_valdymos_sistema.Models
                         {
                             id = reader.GetInt32("id"),
                             name = reader.GetString("name"),
+                            lastName = reader.GetString("lastname"),
                             tasks = tasks,
                             excludedTasks = excluded
                         };
@@ -170,7 +177,63 @@ namespace darbuotoju_valdymos_sistema.Models
             return worker;
         }
 
-        // getting the 
+        public Workers RemoveTaskFromWorker(int workerid, int taskid)
+        {
+            using (MySqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("DELETE FROM assignedtasks WHERE (worker_id, task_id) IN ((" + workerid + "," + taskid + "))", conn);
+                var result = cmd.ExecuteNonQuery();
+
+            }
+            Workers worker = GetWorkerById(workerid);
+            return worker;
+        }
+        public void CreateNewWorker(string name, string lastname)
+        {
+            using (MySqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("INSERT INTO workers (name, lastname) VALUES ('" + name + "', '" + lastname + "')", conn);
+                var result = cmd.ExecuteNonQuery();
+            }
+            
+        }
+        public void CreateNewTask(string name, string description, DateTime duebydate, long createddate)
+        {
+            using (MySqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("INSERT INTO tasks (name, description, dueby, created) VALUES ('" + name + "', '" + description + "', '"+duebydate.ToString("yyyy-MM-dd HH:mm:ss") +"', '"+ DateTimeOffset.FromUnixTimeMilliseconds(createddate).DateTime.ToString("yyyy-MM-dd HH:mm:ss") + "' )", conn);
+                var result = cmd.ExecuteNonQuery();
+            }
+
+        }
+        public void RemoveTask(int id)
+        {
+            using (MySqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("DELETE FROM tasks WHERE id=" + id, conn);
+                var result = cmd.ExecuteNonQuery();
+            }
+
+        }
+        public void RemoveWorker(int id)
+        {
+            using (MySqlConnection conn = GetConnection())
+            {
+                conn.Open();
+                MySqlCommand cmd = new MySqlCommand("DELETE FROM workers WHERE id=" + id, conn);
+                var result = cmd.ExecuteNonQuery();
+            }
+
+        }
+        public void CreateNewWorkerWindow(string Name)
+        {
+            
+
+        }
         public List<Workers> GetWorkersAssignedToTask(int taskid)
         {
             List<Workers> list = new List<Workers>();
@@ -187,6 +250,7 @@ namespace darbuotoju_valdymos_sistema.Models
                         {
                             id = reader.GetInt32("id"),
                             name = reader.GetString("name"),
+                            lastName = reader.GetString("lastname"),
                         });
                     }
                 }
@@ -214,6 +278,8 @@ namespace darbuotoju_valdymos_sistema.Models
                             name = reader.GetString("name"),
                             description = reader.GetString("description"),
                             status = reader.GetBoolean("status"),
+                            dueby = reader.GetDateTime("dueby"),
+                            created = reader.GetDateTime("created")
                         });
                     }
                     reader.Close();

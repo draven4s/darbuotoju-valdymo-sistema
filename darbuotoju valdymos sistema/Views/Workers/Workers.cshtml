@@ -7,46 +7,17 @@
     <h1 class="display-4">Workers</h1>
     <p>Worker information and Tasks assigned to them can be found here.</p>
 
-
-<table class="table" id="showtable">
-  <tr>
-    <th>                   
-        <a asp-action="Workers" asp-route-sortOrder="@ViewData["IdSortParam"]">Worker identifier</a>
-    </th>
-    <th>
-        <a asp-action="Workers" asp-route-sortOrder="@ViewData["NameSortParam"]">Worker name</a>
-    </th>
-    <th>
-        Assigned Tasks
-    </th>
-    <th>
-        Actions
-    </th>
-
-  </tr>
-  @foreach (var item in Model)
-  {
-    <tr>
-      <td>
-        @item.id
-      </td>
-      <td>
-        @item.name
-      </td>
-      <td>
-      @foreach(var task in item.tasks){
-          <button id="viewbtn">@task.name</button> 
-      }
-      </td>
-      <td>
-          <button id="editUser">Edit Worker</button> 
-          <button id="deleteUser">Delete Worker</button> 
-      </td>
-    </tr>
-  }
-</table>
+       <div> <button id="createWorkerWindow" onclick="CreateNewWorker()">Create Worker</button> 
+        <tr><br />
+       Search term:<input type="text" id="searchTerm" oninput="searchFunction()" name="searchTerm" value=""><br/>
+       </tr>
+       </div>
+    <div class="table" id="showtable">
+      @await Html.PartialAsync("_MainWorkersWindow", Model)
+    </div>
 
 </div>
+
 <div id="showmodal" class="modal fade" tabindex="-1" role="dialog">
     <div class="modal-dialog" role="document">
         
@@ -54,8 +25,7 @@
 </div>
 @section scripts{
     <script>
-        $("#showtable").on("click", "#viewbtn", function () {
-            var id = $(this).closest("tr").find("td").eq(0).html();
+        function ViewTask(id){
             $.ajax({
                 url: "@Url.Action("TaskInfo", "Tasks")",
                 data: { id: id },
@@ -64,7 +34,7 @@
                     $("#showmodal").modal("show");
                 }
             });
-        });
+        }
         $("#showtable").on("click", "#editUser", function () {
             var id = $(this).closest("tr").find("td").eq(0).html();
             $.ajax({
@@ -84,6 +54,7 @@
                 success: function (data) {
                     $("#showmodal .modal-dialog").html(data);
                     $("#showmodal").modal("show");
+                    updateUserTable();
                 }
             });
         });
@@ -92,20 +63,89 @@
            $("#showmodal").modal("hide");
 
         });
-
-       $("#showmodal").on("click", "#addTask", function () {
+        function addTask(taskid){
            var id = document.getElementById("personalUserId").getAttribute("data-id");
-           var taskid = document.getElementById("addTask").getAttribute("data-taskid");
             $.ajax({
                 url: "@Url.Action("AddTask", "Tasks")",
                 data: { userid: id, taskid: taskid},
                 success: function (data) {
                     $("#showmodal .modal-dialog").html(data);
                     $("#showmodal").modal("show");
+                    updateUserTable();
+                }
+            });
+        }
+        function removeTask(taskid){
+        
+           var id = document.getElementById("personalUserId").getAttribute("data-id");
+            $.ajax({
+                url: "@Url.Action("RemoveTask", "Tasks")",
+                data: { userid: id, taskid: taskid},
+                success: function (data) {
+                    $("#showmodal .modal-dialog").html(data);
+                    $("#showmodal").modal("show");
+                    updateUserTable();
                 }
             });
 
-        });
+        }
+        function updateUserTable(){
+            searchFunction();
+        }
+        function CreateNewWorker(){
+        
+            $.ajax({
+                url: "@Url.Action("CreateWorkerWindow", "Workers")",
+                data: {},
+                success: function (data) {
+                    $("#showmodal .modal-dialog").html(data);
+                    $("#showmodal").modal("show");
+                }
+            });
+
+        }
+        function SaveNewWorker(){
+            let workerName = document.getElementById("newWorkerName").value; 
+            let workerLastname = document.getElementById("newWorkerLastname").value; 
+            if (confirm('Create new worker with name?')) {
+                $.ajax({
+                    url: "@Url.Action("CreateNewWorker", "Workers")",
+                    data: {name: workerName, lastname: workerLastname},
+                    success: function () {
+                        updateUserTable();
+                    }
+                });
+            }else{
+
+            }
+
+        }
+        function DeleteWorker(id){
+            if (confirm('Do you really want to delete this worker?')) {
+                $.ajax({
+                    url: "@Url.Action("DeleteWorker", "Workers")",
+                    data: {id: id},
+                    success: function () {
+                        updateUserTable();
+                    }
+                });
+            }else{
+
+            }
+
+        }
+        function searchFunction(sortOrder)
+        {
+            let searchTerm = document.getElementById("searchTerm").value; 
+            $.ajax({
+                url: "@Url.Action("UpdateWorkersTableSearch", "Workers")",
+                data: {sortOrder: sortOrder, term: searchTerm},
+                success: function (data) {
+                    $("#showtable").html(data);
+                }
+            });
+
+        }
 
     </script>
 }

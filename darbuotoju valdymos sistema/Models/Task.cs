@@ -15,6 +15,8 @@ namespace darbuotoju_valdymos_sistema.Models
         public string name { get; set; }
         public string description { get; set; } 
         public bool status { get; set; }
+        public DateTime dueby { get; set; }
+        public DateTime created { get; set; }
         public List<Workers> workers { get; set; }
 
     }

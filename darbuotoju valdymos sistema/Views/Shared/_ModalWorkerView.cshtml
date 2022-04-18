@@ -5,33 +5,9 @@
         <h4 class="modal-title">Modal title</h4>
     </div>
     <div class="modal-body">
-        <table class="table" id="userTable">
-              <tr>
-    <th>                   
-        Worker identifier
-    </th>
-    <th>
-        Worker name
-    </th>
-    <th>
-        Assigned Tasks
-    </th>
 
-  </tr>
-          <tr>
-            <td id="personalUserId" data-id=@Model.id>   
-                @Model.id
-            </td>
-            <td>   
-                @Model.name
-            </td>
-            <td>
-                @foreach(var item in Model.tasks)
-                {
-                    <button id="removeTask" data-taskId=@item.id>@item.name</button>         
-                }
-            </td>
-          </tr>
+        <table class="table" id="userTable">
+            @await Html.PartialAsync("_UserDataView", Model)
           </table>
           <table class="table" id="excludedTable">
                 <th>
@@ -40,7 +16,7 @@
                 <tr>
                     <td>
                     @foreach(var item in Model.excludedTasks){
-                        <button id="addTask" data-taskid=@item.id>@item.name</button>
+                        <button id="addTask" onclick="addTask(@item.id)">@item.name</button>
                     }
                     </td>
                 </tr>
