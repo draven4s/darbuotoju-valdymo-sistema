@@ -5,22 +5,17 @@
         <h4 class="modal-title">Modal title</h4>
     </div>
     <div class="modal-body">
-
+        Search for task:<input type="text" id="searchTaskTerm" oninput="searchTaskInWorkerView()" name="searchTaskTerm" value=""><br/>
         <table class="table" id="userTable">
             @await Html.PartialAsync("_UserDataView", Model)
-          </table>
-          <table class="table" id="excludedTable">
-                <th>
-                    Unassigned Tasks
-                </th>
-                <tr>
-                    <td>
-                    @foreach(var item in Model.excludedTasks){
-                        <button id="addTask" onclick="addTask(@item.id)">@item.name</button>
-                    }
-                    </td>
-                </tr>
-          </table>
+         </table>
+            <th>
+                Unassigned Tasks
+            </th>
+         <table class="table" id="excludedTable">
+             
+            @await Html.PartialAsync("_ExcludedTasks", Model.excludedTasks)
+         </table>
 
     </div>
     <div class="modal-footer">

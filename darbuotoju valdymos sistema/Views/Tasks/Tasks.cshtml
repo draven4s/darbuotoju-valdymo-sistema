@@ -157,11 +157,25 @@
         function searchFunction(sortOrder)
         {
             let searchTerm = document.getElementById("searchTerm").value; 
+
             $.ajax({
                 url: "@Url.Action("UpdateTasksTableSearch", "Tasks")",
                 data: {sortOrder: sortOrder, term: searchTerm},
                 success: function (data) {
                     $("#showtable").html(data);
+                }
+            });
+
+        }
+        function searchTaskInWorkerView()
+        {
+            let searchTerm = document.getElementById("searchTaskTerm").value; 
+            var id = document.getElementById("personalUserId").getAttribute("data-id");
+            $.ajax({
+                url: "@Url.Action("UpdateTasksExcludedSearch", "Tasks")",
+                data: {term: searchTerm, userid: id},
+                success: function (data) {
+                    $("#excludedTable").html(data);
                 }
             });
 

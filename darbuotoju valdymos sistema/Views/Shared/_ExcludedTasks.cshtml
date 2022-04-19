@@ -1,0 +1,9 @@
+﻿@model IEnumerable<darbuotoju_valdymos_sistema.Models.Task>
+
+<tr>
+    <td>
+        @foreach(var item in Model){
+            <button id="addTask" onclick="addTask(@item.id)">@item.name</button>
+        }
+    </td>
+</tr>

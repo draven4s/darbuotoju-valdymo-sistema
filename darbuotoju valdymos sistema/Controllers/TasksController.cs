@@ -52,6 +52,22 @@ namespace darbuotoju_valdymos_sistema.Controllers
             }
             return View(tasks);
         }
+        public IActionResult UpdateTasksExcludedSearch(string term, int userid)
+        {
+            term = String.IsNullOrEmpty(term) ? "" : term;
+            DBContext context = HttpContext.RequestServices.GetService(typeof(DBContext)) as DBContext;
+
+            List<darbuotoju_valdymos_sistema.Models.Task> tasks = context.GetTasksAssignedToWorker(userid);
+            List<darbuotoju_valdymos_sistema.Models.Task> excluded = context.GetAllTasks(tasks);
+
+            if (term != "")
+            {
+                var lTerm = term.ToLower();
+                excluded = excluded.Where(n => n.id.ToString().Contains(lTerm) || n.name.ToLower().Contains(lTerm)).ToList();
+            }
+            return PartialView("_ExcludedTasks", excluded);
+        }
+
         public IActionResult TaskInfo(int id)
         {
             DBContext context = HttpContext.RequestServices.GetService(typeof(DBContext)) as DBContext;
